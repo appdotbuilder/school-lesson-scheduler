@@ -1,9 +1,24 @@
 
+import { db } from '../db';
+import { lessonsTable } from '../db/schema';
 import { type Lesson } from '../schema';
+import { eq } from 'drizzle-orm';
 
 export const getLessonById = async (id: number): Promise<Lesson | null> => {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is fetching a single lesson by its ID from the database.
-    // Should return null if the lesson is not found.
-    return null;
+  try {
+    const result = await db.select()
+      .from(lessonsTable)
+      .where(eq(lessonsTable.id, id))
+      .execute();
+
+    if (result.length === 0) {
+      return null;
+    }
+
+    const lesson = result[0];
+    return lesson;
+  } catch (error) {
+    console.error('Get lesson by ID failed:', error);
+    throw error;
+  }
 };
